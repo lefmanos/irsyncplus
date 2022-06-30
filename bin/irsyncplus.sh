@@ -7,11 +7,49 @@
 # trap "exit 1" TERM
 export TOP_PID=$$
 
+use_sudo=""
 if [ $SUDO_USER ]; then
 	USER=$SUDO_USER 
 else 
 	USER=`whoami` 
+	use_sudo=sudo
 fi 
+
+if [[ $# -eq 1 ]]; then
+	case $1 in
+		update)
+			ping -c1 github.com
+			if [[ $? -ne 0 ]]; then 
+				echo Maybe you are not connected to the internet
+				echo Check your connection and try again
+				exit 1
+			fi
+			pushd $(dirname $(dirname $(realpath $0)))
+			git remote update && git status | grep "git pull"
+			is_up_to_date=$?
+			echo $is_up_to_date
+			if [[ $is_up_to_date -eq 0 ]]; then
+				echo updating irsyncplus...
+				git pull
+				$use_sudo make install
+				if [[ $? -ne 0 ]]; then 
+					echo Something went wrong during installation
+					exit 1
+				fi
+			else 
+				echo irsyncplus is up to date
+			fi
+			popd
+			exit 0
+			;;
+		*)
+			echo $@ 
+			echo what do you mean with that?
+			echo I don\'t know what to do, goodbuy
+			exit 1
+			;;
+	esac
+fi
 
 [[ -d /run/media/$USER ]] && DIR=/run/media/$USER/ 
 [[ -d /media/$USER ]] && DIR=/media/$USER/ 
