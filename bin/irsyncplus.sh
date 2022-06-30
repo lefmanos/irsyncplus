@@ -43,10 +43,21 @@ if [[ $# -eq 1 ]]; then
 			popd
 			exit 0
 			;;
+		help | --help | -h)
+			echo "Just run:"
+			echo "	$ doit"
+			echo ""
+			echo "Options:"
+			echo "	update		installs updates"
+			echo "	help		prints this message"
+			exit 0
+			;;
 		*)
 			echo $@ 
 			echo what do you mean with that?
 			echo I don\'t know what to do, goodbuy
+			echo run with option help
+			echo "	 doit help\n"
 			exit 1
 			;;
 	esac
