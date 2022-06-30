@@ -15,6 +15,7 @@ else
 	use_sudo=sudo
 fi 
 
+# ad a pointless comment
 if [[ $# -eq 1 ]]; then
 	case $1 in
 		update)
